@@ -16,3 +16,6 @@ gradlew*
 
 # Other files
 .eslintcache
+
+# Ignore vscode settings
+.vscode/
