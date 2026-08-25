@@ -95,9 +95,9 @@
     <framework src="com.android.support:design:27.1.0" />
 
     <framework src="com.google.android.gms:play-services-mlkit-barcode-scanning:18.2.0" />
-    <framework src="com.google.mlkit:barcode-scanning:17.1.0" />
+    <framework src="com.google.mlkit:barcode-scanning:17.3.0" />
 
-    <framework src="androidx.camera:camera-core:1.1.0" />
+    <framework src="androidx.camera:camera-core:1.4.2" />
     <framework src="androidx.camera:camera-camera2:1.1.0" />
     <framework src="androidx.camera:camera-lifecycle:1.1.0" />
     <framework src="androidx.camera:camera-view:1.1.0" />
