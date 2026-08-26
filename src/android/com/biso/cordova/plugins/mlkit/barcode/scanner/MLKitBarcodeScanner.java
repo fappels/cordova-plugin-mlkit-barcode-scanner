@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -39,9 +40,13 @@ public class MLKitBarcodeScanner extends CordovaPlugin {
 
     Context context = cordova.getContext();
 
-    VibratorManager vibratorManager = (VibratorManager) context.getSystemService(
-        Context.VIBRATOR_MANAGER_SERVICE);
-    vibrator = vibratorManager.getDefaultVibrator();
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      VibratorManager vibratorManager = (VibratorManager) context.getSystemService(
+          Context.VIBRATOR_MANAGER_SERVICE);
+      vibrator = vibratorManager != null ? vibratorManager.getDefaultVibrator() : null;
+    } else {
+      vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+    }
     mediaPlayer = new MediaPlayer();
 
     try (AssetFileDescriptor descriptor = context.getAssets().openFd("beep.mp3")) {
@@ -127,7 +132,7 @@ public class MLKitBarcodeScanner extends CordovaPlugin {
             mediaPlayer.start();
           }
 
-          if (scannerSettings.isVibrateOnSuccess()) {
+          if (scannerSettings.isVibrateOnSuccess() && vibrator != null && vibrator.hasVibrator()) {
             int duration = 200;
             vibrator.vibrate(
                 VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE));
