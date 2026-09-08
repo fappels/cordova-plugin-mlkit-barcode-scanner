@@ -38,6 +38,14 @@ public class DetectedBarcode implements Parcelable, Comparable<DetectedBarcode> 
       value = new String(barcode.getRawBytes(), StandardCharsets.US_ASCII);
     }
 
+    // For GS1-128, ML Kit's Code 128 decoder prefixes the value with the literal
+    // AIM symbology identifier ("]C1"/"]C2") to flag the leading FNC1, instead of
+    // just omitting it like it does for other GS1 symbologies (e.g. Data Matrix).
+    // Strip it so GS1 content starts with the first AI regardless of symbology.
+    if (format == Barcode.FORMAT_CODE_128 && value != null && value.matches("^\\]C[12].*")) {
+      value = value.substring(3);
+    }
+
     distanceToCenter = Math.hypot(centerX - this.bounds.centerX(),
         centerY - this.bounds.centerY());
   }
