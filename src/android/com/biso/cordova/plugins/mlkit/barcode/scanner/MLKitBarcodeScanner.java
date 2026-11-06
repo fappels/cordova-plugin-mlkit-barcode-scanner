@@ -113,6 +113,12 @@ public class MLKitBarcodeScanner extends CordovaPlugin {
 
     if (requestCode == RC_BARCODE_CAPTURE) {
       if (resultCode == CommonStatusCodes.SUCCESS) {
+        if (data == null) {
+          // SUCCESS (0) equals RESULT_CANCELED: back button cancel returns no data
+          callbackContext.sendPluginResult(
+              new PluginResult(PluginResult.Status.ERROR, "SCAN_CANCELED"));
+          return;
+        }
         if (data != null) {
           try {
             ArrayList<DetectedBarcode> barcodes = data.getParcelableArrayListExtra(BARCODES);
@@ -139,7 +145,11 @@ public class MLKitBarcodeScanner extends CordovaPlugin {
           }
         }
       } else {
-        String err = data.getStringExtra("error");
+        // data is null when the user cancels with the back button (RESULT_CANCELED)
+        String err = data != null ? data.getStringExtra("error") : null;
+        if (err == null) {
+          err = "SCAN_CANCELED";
+        }
         callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, err));
       }
     }
